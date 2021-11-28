@@ -1,0 +1,156 @@
+
+module decoder2to4( input logic input1, input0, enable,
+                    output logic y3, y2, y1, y0);
+    assign y3 = input1 & input0 & enable;
+    assign y2 = input1 & ~input0 & enable;
+    assign y1 = ~input1 & input0 & enable;
+    assign y0 = ~input1 & ~input0 & enable;
+                    
+endmodule
+
+module testbench1();
+    logic in1, in0;
+    logic y3, y2, y1, y0;
+    decoder2to4 testbench(in1, in0, y3, y2, y1, y0);
+    initial begin
+        in1 = 0; in0 = 0; #10;
+        in0 = 1; #10;
+        in1 = 1; in0 = 0; #10;
+        in0 = 1; #10;
+    end;
+endmodule
+
+module mux4to1(input logic input0, input1, input2, input3, s0, s1, 
+                output logic y);
+    logic mux0, mux1;
+    assign mux0 = s1 ? input1 : input0;
+    assign mux1 = s1 ? input3 : input2;
+    assign y = s0 ? mux1 : mux0;
+endmodule
+
+ module testbench2();
+logic a, b, c, d, s0, s1, y;
+    mux4to1 testbench(a, b, c, d, s0, s1, y);
+    initial begin
+    a = 0; b = 0; c = 0; d = 0; s0 = 0; s1 = 0;#10;
+    a = 0; b = 0; c = 0; d = 0; s0 = 0; s1 = 1;#10;
+    a = 0; b = 0; c = 0; d = 0; s0 = 1; s1 = 0;#10;
+    a = 0; b = 0; c = 0; d = 0; s0 = 1; s1 = 1;#10;
+    a = 0; b = 0; c = 0; d = 1; s0 = 0; s1 = 0;#10;
+    a = 0; b = 0; c = 0; d = 1; s0 = 0; s1 = 1;#10;
+    a = 0; b = 0; c = 0; d = 1; s0 = 1; s1 = 0;#10;
+    a = 0; b = 0; c = 0; d = 1; s0 = 1; s1 = 1;#10;
+    a = 0; b = 0; c = 1; d = 0; s0 = 0; s1 = 0;#10;
+    a = 0; b = 0; c = 1; d = 0; s0 = 0; s1 = 1;#10;
+    a = 0; b = 0; c = 1; d = 0; s0 = 1; s1 = 0;#10;
+    a = 0; b = 0; c = 1; d = 0; s0 = 1; s1 = 1;#10;
+    a = 0; b = 0; c = 1; d = 1; s0 = 0; s1 = 0;#10;
+    a = 0; b = 0; c = 1; d = 1; s0 = 0; s1 = 1;#10;
+    a = 0; b = 0; c = 1; d = 1; s0 = 1; s1 = 0;#10;
+    a = 0; b = 0; c = 1; d = 1; s0 = 1; s1 = 1;#10;
+    a = 0; b = 1; c = 0; d = 0; s0 = 0; s1 = 0;#10;
+    a = 0; b = 1; c = 0; d = 0; s0 = 0; s1 = 1;#10;
+    a = 0; b = 1; c = 0; d = 0; s0 = 1; s1 = 0;#10;
+    a = 0; b = 1; c = 0; d = 0; s0 = 1; s1 = 1;#10;
+    a = 0; b = 1; c = 0; d = 1; s0 = 0; s1 = 0;#10;
+    a = 0; b = 1; c = 0; d = 1; s0 = 0; s1 = 1;#10;
+    a = 0; b = 1; c = 0; d = 1; s0 = 1; s1 = 0;#10;
+    a = 0; b = 1; c = 0; d = 1; s0 = 1; s1 = 1;#10;
+    a = 0; b = 1; c = 1; d = 0; s0 = 0; s1 = 0;#10;
+    a = 0; b = 1; c = 1; d = 0; s0 = 0; s1 = 1;#10;
+    a = 0; b = 1; c = 1; d = 0; s0 = 1; s1 = 0;#10;
+    a = 0; b = 1; c = 1; d = 0; s0 = 1; s1 = 1;#10;
+    a = 0; b = 1; c = 1; d = 1; s0 = 0; s1 = 0;#10;
+    a = 0; b = 1; c = 1; d = 1; s0 = 0; s1 = 1;#10;
+    a = 0; b = 1; c = 1; d = 1; s0 = 1; s1 = 0;#10;
+    a = 0; b = 1; c = 1; d = 1; s0 = 1; s1 = 1;#10;
+    a = 1; b = 0; c = 0; d = 0; s0 = 0; s1 = 0;#10;
+    a = 1; b = 0; c = 0; d = 0; s0 = 0; s1 = 1;#10;
+    a = 1; b = 0; c = 0; d = 0; s0 = 1; s1 = 0;#10;
+    a = 1; b = 0; c = 0; d = 0; s0 = 1; s1 = 1;#10;
+    a = 1; b = 0; c = 0; d = 1; s0 = 0; s1 = 0;#10;
+    a = 1; b = 0; c = 0; d = 1; s0 = 0; s1 = 1;#10;
+    a = 1; b = 0; c = 0; d = 1; s0 = 1; s1 = 0;#10;
+    a = 1; b = 0; c = 0; d = 1; s0 = 1; s1 = 1;#10;
+    a = 1; b = 0; c = 1; d = 0; s0 = 0; s1 = 0;#10;
+    a = 1; b = 0; c = 1; d = 0; s0 = 0; s1 = 1;#10;
+    a = 1; b = 0; c = 1; d = 0; s0 = 1; s1 = 0;#10;
+    a = 1; b = 0; c = 1; d = 0; s0 = 1; s1 = 1;#10;
+    a = 1; b = 0; c = 1; d = 1; s0 = 0; s1 = 0;#10;
+    a = 1; b = 0; c = 1; d = 1; s0 = 0; s1 = 1;#10;
+    a = 1; b = 0; c = 1; d = 1; s0 = 1; s1 = 0;#10;
+    a = 1; b = 0; c = 1; d = 1; s0 = 1; s1 = 1;#10;
+    a = 1; b = 1; c = 0; d = 0; s0 = 0; s1 = 0;#10;
+    a = 1; b = 1; c = 0; d = 0; s0 = 0; s1 = 1;#10;
+    a = 1; b = 1; c = 0; d = 0; s0 = 1; s1 = 0;#10;
+    a = 1; b = 1; c = 0; d = 0; s0 = 1; s1 = 1;#10;
+    a = 1; b = 1; c = 0; d = 1; s0 = 0; s1 = 0;#10;
+    a = 1; b = 1; c = 0; d = 1; s0 = 0; s1 = 1;#10;
+    a = 1; b = 1; c = 0; d = 1; s0 = 1; s1 = 0;#10;
+    a = 1; b = 1; c = 0; d = 1; s0 = 1; s1 = 1;#10;
+    a = 1; b = 1; c = 1; d = 0; s0 = 0; s1 = 0;#10;
+    a = 1; b = 1; c = 1; d = 0; s0 = 0; s1 = 1;#10;
+    a = 1; b = 1; c = 1; d = 0; s0 = 1; s1 = 0;#10;
+    a = 1; b = 1; c = 1; d = 0; s0 = 1; s1 = 1;#10;
+    a = 1; b = 1; c = 1; d = 1; s0 = 0; s1 = 0;#10;
+    a = 1; b = 1; c = 1; d = 1; s0 = 0; s1 = 1;#10;
+    a = 1; b = 1; c = 1; d = 1; s0 = 1; s1 = 0;#10;
+    a = 1; b = 1; c = 1; d = 1; s0 = 1; s1 = 1;#10;
+    end;
+endmodule
+
+
+
+module mux8to1(input logic input0, input1, input2, input3, input4, input5, input6, input7, s0, s1, s2, output logic y);
+logic n0, n1, n2, n3, n4;
+mux4to1 mux0(input0, input2, input4, input6, s0, s1, n0);
+mux4to1 mux1(input1, input3, input5, input7, s0, s1, n1);
+not(n4, s2);
+and( n2, n0, n4);
+and(n3, s2, n1);
+or( y, n3, n2);
+endmodule
+
+module testbench3();
+logic a, b, c, d, e, f, g, h, s0, s1, s2, y;
+mux8to1 testbench(a, b, c, d, e, f, g, h, s0, s1, s2, y);
+initial begin
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 0; s1 = 0; s2 = 0; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 0; s1 = 0; s2 = 1; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 0; s1 = 1; s2 = 0; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 0; s1 = 1; s2 = 1; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 1; s1 = 0; s2 = 0; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 1; s1 = 0; s2 = 1; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 1; s1 = 1; s2 = 0; #10;
+a = 0; b = 0; c = 1; d = 1; e = 0; f = 0; g= 1; h = 1; s0 = 1; s1 = 1; s2 = 1; #10;
+end                                        
+endmodule
+
+module mux8to1min(input logic a, b, c, d, output logic y);
+mux8to1 mux(d, ~d, d, d, 1, ~d, ~d, d, a, b, c, y);
+endmodule
+
+module testbench4( );
+logic a,b,c,d,y;
+mux8to1min test(a,b,c,d,y);
+initial begin
+a = 0; b = 0; c = 0; d = 0;#10;
+a = 0; b = 0; c = 0; d = 1;#10;
+a = 0; b = 0; c = 1; d = 0;#10;
+a = 0; b = 0; c = 1; d = 1;#10;
+a = 0; b = 1; c = 0; d = 0;#10;
+a = 0; b = 1; c = 0; d = 1;#10;
+a = 0; b = 1; c = 1; d = 0;#10;
+a = 0; b = 1; c = 1; d = 1;#10;
+a = 1; b = 0; c = 0; d = 0;#10;
+a = 1; b = 0; c = 0; d = 1;#10;
+a = 1; b = 0; c = 1; d = 0;#10;
+a = 1; b = 0; c = 1; d = 1;#10;
+a = 1; b = 1; c = 0; d = 0;#10;
+a = 1; b = 1; c = 0; d = 1;#10;
+a = 1; b = 1; c = 1; d = 0;#10;
+a = 1; b = 1; c = 1; d = 1;#10;
+end
+endmodule
+
+

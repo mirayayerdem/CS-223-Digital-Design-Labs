@@ -1,0 +1,122 @@
+module Func_Blue(input logic SA, SB, input logic [2:0] state, output logic[2:0] nextstate);
+logic [3:0] n3;
+logic [7:0]n1, n2, n4;
+decoder3_8 s2next(~state[2], state[1], state[0], n4);
+decoder2_4 s1next(state[1], state[0], n3);
+decoder3_8 s0next(state[2], state[0],SA , n1);
+decoder3_8 s0next2(state[2], state[0],SB , n2);
+assign nextstate[0] = n1[0] | n2[4] | n3[2];
+assign nextstate[1] = n3[1] | n3[2];
+assign nextstate[2] = n4[0] |n4[1] | n4[2] | n4[7];
+
+endmodule
+
+
+
+module Func_Green(input logic[2:0] current_state, output logic [1:0] LA, LB);
+mux4_1 la0module(current_state[0],0,0, current_state[0], current_state[1],current_state[2], LA[0]);
+mux4_1 la1module(0, 1, 1, ~current_state[0], current_state[1], current_state[2], LA[1]);
+mux4_1 lb0module(0,current_state[0], current_state[0], 0, current_state[1], current_state[2], LB[0]);
+mux4_1 lb1module(1, ~current_state[0], 0, 1, current_state[1], current_state[2], LB[1]);
+
+
+endmodule
+
+
+module decoder3_8( input logic in2, in1, in0, output logic [7:0] out1);
+
+assign out1[0] = ~in2 & ~in1 & ~in0;
+assign out1[1] = ~in2 & ~in1 & in0;
+assign out1[2] = ~in2 & in1 & ~in0;
+assign out1[3] = ~in2 & in1 & in0;
+assign out1[4] = in2 & ~in1 & ~in0;
+assign out1[5] = in2 & ~in1 & in0;
+assign out1[6] = in2 & in1 & ~in0;
+assign out1[7] = in2 & in1 & in0;
+
+endmodule
+
+
+
+module decoder2_4( input logic in1, in0 ,output logic[3:0] out1);
+ 
+ assign out1[0] = ~in1 & ~in0;
+ assign out1[1] = ~in1 & in0;
+ assign out1[2] = in1 & ~in0;
+ assign out1[3] = in1 & in0; 
+
+endmodule               
+
+module mux4_1( input logic d0, d1, d2, d3, s0, s1, output logic y);
+    assign y = s1 ? ( s0 ? d3: d2 ) : ( s0 ? d1: d0);
+endmodule
+
+
+
+
+
+module TrafficLightFSM(input logic reset, clk , SA, SB, 
+                        output logic [2:0] next_state, output logic  LA32, LA31, LA30, LB32, LB31, LB30
+                         );
+
+
+logic [2:0] current_state;
+logic [1:0] LA, LB;
+
+//output logic 
+
+Func_Blue m2(SA, SB, current_state, next_state);
+dff dff0(clk, reset, next_state[0], current_state[0]);
+dff dff1(clk, reset, next_state[1], current_state[1]);
+dff dff2(clk, reset, next_state[2], current_state[2]);
+
+ 
+Func_Green m1(current_state, LA, LB);
+
+
+assign LA32 = ~LA[1] & ~LA[0];
+assign LA31 = ~LA[1];
+assign LA30 = 1;
+assign LB32 = ~LB[1] & ~LB[0];
+assign LB31 = ~LB[1];
+assign LB30 = 1;
+
+
+endmodule
+
+
+module ClockDivider(
+input clk_in,
+output clk_out
+);
+logic [25:0] count = {26{1'b0}};
+logic clk_NoBuf;
+always@ (posedge clk_in) begin
+count <= count + 1;
+end
+// you can modify 25 to have different clock rate
+assign clk_NoBuf = count[25];
+BUFG BUFG_inst (
+.I(clk_NoBuf), // 1-bit input: Clock input
+.O(clk_out) // 1-bit output: Clock output
+);
+endmodule
+
+module TrafficLightFSMWithClockDivider(input logic clk_in, reset, SA, SB, output logic LA32, LA31, LA30,  LB32
+, LB31 , LB30);
+logic clkout;
+ClockDivider dvd(clk_in, clkout);
+TrafficLightFSM(reset, clkout , SA, SB, 
+                     next_state, LA32, LA31, LA30, LB32, LB31, LB30);
+endmodule
+
+module dff(
+	input clk, rst, d,
+	output logic q);
+
+  always@(posedge clk or posedge rst)
+      if (rst)
+        q <= 0;
+      else
+        q <= d;
+endmodule
